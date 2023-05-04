@@ -29,8 +29,8 @@ def login() -> Tuple[str, int]:
     if users[0].is_valid_password('password'):
         from api.v1.app import auth
 
-        session_id = auth.create_session(getattr(users[0], 'id'))
+        sess_id = auth.create_session(getattr(users[0], 'id'))
         res = jsonify(users[0].to_json())
-        res.set_cookie(os.getenv("SESSION_NAME"), session_id)
+        res.set_cookie(os.getenv("SESSION_NAME"), sess_id)
         return res
     return jsonify({"error": "wrong password"}), 401
