@@ -26,7 +26,7 @@ def login() -> Tuple[str, int]:
         return jsonify({"error": "no user found for this email"}), 404
     if len(users) <= 0:
         return jsonify({"error": "no user found for this email"}), 404
-    if users[0].is_valid_password('password'):
+    if users[0].is_valid_password(password):
         from api.v1.app import auth
 
         sess_id = auth.create_session(getattr(users[0], 'id'))
