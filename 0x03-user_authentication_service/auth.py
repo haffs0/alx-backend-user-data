@@ -46,6 +46,7 @@ class Auth:
                         user.hashed_password)
         except NoResultFound:
             return False
+        return False
 
     def create_session(self, email: str) -> str:
         """create session ID"""
