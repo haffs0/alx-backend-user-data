@@ -35,10 +35,10 @@ class DB:
         """Add new user to db"""
         try:
             new_user = User(email=email, hashed_password=hashed_password)
-            self._session.add(new_user)
-            self._session.commit()
+            self.__session.add(new_user)
+            self.__session.commit()
         except Exception:
-            self._session.rollback()
+            self.__session.rollback()
             new_user = None
         return new_user
 
@@ -51,7 +51,7 @@ class DB:
                 values.append(value)
             else:
                 raise InvalidRequestError()
-        result = self._session.query(User).filter(
+        result = self.__session.query(User).filter(
                     tuple_(*fields).in_([tuple(values)])
                 ).first()
         if result is None:
