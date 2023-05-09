@@ -49,24 +49,27 @@ class Auth:
 
     def create_session(self, email: str) -> str:
         """create session ID"""
+        user = None
         try:
             user = self._db.find_user_by(email=email)
-            if user:
-                session_id = _generate_uuid()
-                self._db.update_user(user.id, session_id=session_id)
-                return session_id
         except NoResultFound:
+            user = None
+        if user is None:
             return None
+        session_id = _generate_uuid()
+        self._db.update_user(user.id, session_id=session_id)
+        return session_id
 
     def get_user_from_session_id(self, session_id: str) -> Union[User, None]:
         """retrive a user base on session_id"""
+        user = None
         if session_id is None:
             return None
         try:
             user = self._db.find_user_by(session_id=session_id)
-            return user
         except NoResultFound:
             return None
+        return user
 
     def destroy_session(self, user_id: int) -> None:
         """delete session_id"""
