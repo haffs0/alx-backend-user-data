@@ -4,6 +4,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.session import Session
 from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy.orm.exc import NoResultFound
 
@@ -46,7 +47,7 @@ class DB:
         for key in kwargs.keys():
             if key not in column_names:
                 raise InvalidRequestError
-        result = self._session.query(User).filter_by(**kwargs).first()
+        result = self._session.query(User).filter_by(**kwargs).one()
         if result is None:
             raise NoResultFound
         return result
