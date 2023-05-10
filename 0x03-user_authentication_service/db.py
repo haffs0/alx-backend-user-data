@@ -34,30 +34,22 @@ class DB:
 
     def add_user(self, email: str, hashed_password: str) -> User:
         """Add new user to db"""
-        new_user = None
-        try:
-            new_user = User(email=email, hashed_password=hashed_password)
-            self._session.add(new_user)
-            self._session.commit()
-        except Exception:
-            self._session.rollback()
-            new_user = None
+        new_user = User(email=email, hashed_password=hashed_password)
+        self._session.add(new_user)
+        self._session.commit()
         return new_user
 
     def find_user_by(self, **kwargs) -> User:
         """Retrive a user from database by set of filters"""
-        fields, values = [], []
-        for key, value in kwargs.items():
-            if hasattr(User, key):
-                fields.append(getattr(User, key))
-                values.append(value)
-            else:
-                raise InvalidRequestError()
-        result = self._session.query(User).filter(
-                    tuple_(*fields).in_([tuple(values)])
-                ).first()
+        if not kwargs:
+            raise InvalidRequestError
+        column_names = User.__table__.columns.keys()
+        for key in kwargs.keys():
+            if key not in column_names:
+                raise InvalidRequestError
+        result = self._session.query(User).filter_by(**kwargs).first()
         if result is None:
-            raise NoResultFound()
+            raise NoResultFound
         return result
 
     def update_user(self, user_id: int, **kwargs) -> None:
